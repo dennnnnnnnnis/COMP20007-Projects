@@ -1,0 +1,41 @@
+Write your response to the written problem here
+--
+Question 1:
+base level: n
+level 2: n / 2
+level 3: n / (2^2)
+level 4: n / (2^3)
+.
+.
+.
+level i: n / (2^(i-1))
+Thus the average space efficiency would be 
+n + n/2 + n/4 + n/8 +...+ n/(2^(i-1)) = 
+n * (1(1 - (1/2)^i)/(1 - 1/2)) = 
+n * (2 - (1/2)^(i-1)) = 
+2n - ((1/2)^(i-1)) * n = O(n)
+
+Question 2:
+On average and no upper limit, the top list would have 1 element.
+n / (2^(i-1)) = 1
+2^(i-1) = n
+i-1 = log(n)
+i = log(n) + 1
+Therefore, the relationship is logarithm
+
+Question 3:
+Since when searching in a single linked list (single level), the average time efficiency would be
+(1 + n)*n/2n where n is number of elements in a list, so the average case when searching in a leap list should be
+1/2 * number of elements in a single linked list * (1/2 * number of levels)(since it's the average case of number of levels required to search)
+= 1/2 * (1 + 2 + 4 + 8 +....+2^(1/2(log(n) + 1) - 1))
+= 1/2 * (1(1 - 2^(1/2(log(n) + 1)) / 1 - 2)
+ = -1/2 + 1/2 * (sqrt(n) * sqrt(2))
+ =O(sqrt(n))
+
+Question 4:
+The worst case occurs when the the number of element in each list is the same as the 
+number of element in the base level and the key is the last element in the level,
+when the key has been found in the highest level, it will also need to go down by h
+steps to reach the base level, so the worst case time efficiency of finding would be
+O(n+h)
+

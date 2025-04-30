@@ -1,0 +1,2 @@
+man srand
+exit

@@ -1,0 +1,203 @@
+Part A
+Input: a pointer to the tree node
+Output: the median value of the tree
+function FindMedian(tree)
+    array_length <- totalnum(tree)
+    median_index <- (array_length - 1) / 2
+    // Merge the tree into an array
+    A[array_length] <- split_and_merge(tree)
+    return A[median_index] 
+
+Input: a pointer to the tree node
+Output: a pointer to the array consists of all the values of the input 2-3-4 tree with the values sorted as the final output
+function split_and_merge(tree)
+    if tree is NULL then
+        return NULL
+    else if tree->child0 and tree->child1 and tree->child2 and tree->child3 are NULL then
+        return combine(tree)
+    Array1 <- split_and_merge(tree->child0)
+    Array2 <- split_and_merge(tree->child1)
+    Array3 <- split_and_merge(tree->child2)
+    Array4 <- split_and_merge(tree->child3)
+    return merge(Array1, Array2, Array3, Array4, combine(tree), tree)
+
+Input: 5 pointers to 5 arrays and a pointer to current tree node
+Output: A pointer to the merged array of the input arrays with the values sorted
+function merge(a1, a2, a3, a4, tree_array, tree)
+    len_a1 <- totalnum(tree->child0)
+    len_a2 <- totalnum(tree->child1)
+    len_a3 <- totalnum(tree->child2)
+    len_a4 <- totalnum(tree->child3)
+    total_len <- len_a1 + len_a2 + len_a3 + len_a4 + tree->numVals
+    
+    i <- 0
+    for i in 0 to total_len exclusive do
+        A[i] <- -1
+
+    // put everything in a1, a2, a3, a4 and tree_array into a large array
+    if a1 is not NULL then 
+        j <- 0
+        k <- 0
+        while j < len_a1 do
+            if a1[k] is not -1 then
+                A[j] <- a1[k]
+                j <- j + 1
+            k <- k + 1
+    
+    if a2 is not NULL then
+        j <- 0
+        k <- 0
+        while j < len_a2 do
+            if a2[k] is not -1 then
+                A[len_a1 + j] <- a2[k]
+                j <- j + 1
+            k <- k + 1
+
+    if a3 is not NULL then
+        j <- 0
+        k <- 0
+        while j < len_a3 do
+            if a3[k] is not -1 then
+                A[len_a1 + len_a2 + j] <- a3[k]
+                j <- j + 1
+            k <- k + 1
+    
+    if a4 is not NULL then
+        j <- 0
+        k <- 0
+        while j < len_a4 do
+            if a4[k] is not -1 then
+                A[len_a1 + len_a2 + len_a3 + j] <- a4[k]
+                j <- j + 1
+            k <- k + 1
+    
+    j <- 0
+    k <- 0
+    while j < tree->numVals do
+        if tree_array[k] is not -1 then
+            A[total_len - tree->numVals + j] <- tree_array[k]
+            j <- j + 1
+        k <- k + 1
+
+    Insertionsort(A, total_len)
+    return A
+
+Input: a pointer to the node (tree)
+Output: A pointer to the array consists of all the values in the input tree node
+function combine(tree)
+    i <- 0
+    for i in 0 to tree->numVals exclusive do
+        A[i] <- -1
+    
+    if tree->numVals is 1 then
+        A[0] <- tree->value1
+    else if tree->numVals is 2 then
+        A[0] <- tree->value1
+        A[1] <- tree->value2
+    else
+        A[0] <- tree->value1
+        A[1] <- tree->value2
+        A[2] <- tree->value3
+    
+    return A
+
+Input: a pointer to the node (tree)
+Output: A value of input's number of decendants plus its own number of values
+function totalnum(tree)
+    if tree is NULL then
+        return 0
+    else
+        return totalnum(tree->child0) + totalnum(tree->child1) 
+        + totalnum(tree->child2) + totalnum(tree->child3) + tree->numVals
+
+Input: A pointer to an merged array with its length
+Output: Nothing but sort the values within the array pointed by the input pointer
+function Insertionsort(A[], total_len)
+    for i <- 1 to total_len - 1 inclusive do
+        j <- i - 1
+        while j >= 0 and A[j + 1] < A[j] do
+            tmp <- A[j]
+            A[j] <- A[j + 1]
+            A[j + 1] <- tmp
+            j <- j - 1
+
+
+Part B
+Input: a pointer to the node (tree) to be updated
+Output: number of decendants of the input tree node
+function numDecendants(tree)
+    if tree is NULL then
+        return 0
+    else
+        decendants <- totalnum(tree->child0) + totalnum(tree->child1) 
+        + totalnum(tree->child2) + totalnum(tree->child3)
+        tree->numDecendant <- decendants
+        return decendants
+
+Part C
+Input: a pointer to the tree node
+Output: the median value of the 2-3-4 tree
+function findMedian(tree)
+    level <- 0
+    value <- 0
+    target_level <- 0
+    num_input <- totalnum(tree)
+    median_index <- (num_input + 1) / 2
+
+    findmid(tree, level, &median_index, &value, &target_level)
+
+    return value
+
+Input: a pointer to the tree node, value of the current level, a pointer to the number of values required
+       to access before finding the median, a pointer to the value wich is going to be replaced by the 
+       median, a pointer to the level which is going to be the level the median is oon
+Output: Nothing, but replace the input value with the median and the target level with the level the median is on
+function findmid(tree, level, median_index, value, target_level)
+    // Using In-order tranversal to access the nodes in the tree
+    if tree is not NULL then
+        findmid(tree->child0, level + 1, median_index, value, target_level)
+        if tree->value1 is not -1 then
+            *median_index <- *median_index - 1
+            if *median_index is 0 then
+                *value <- tree->value1
+                *target_level <- level
+        
+        if *median_index is not 0 then
+            findmid(tree->child1, level + 1, median_index, value, target_level)
+            if tree->value2 is not -1 then
+                *median_index <- *median_index - 1
+                if *median_index is 0 then
+                    *value <- tree->value2
+                    *target_level <- level
+        
+        if *median_index is not 0 then
+            findmid(tree->child2, level + 1, median_index, value, target_level)
+            if tree->value3 is not -1 then
+                *median_index <- *median_index - 1
+                if *median_index is 0 then
+                    *value <- tree->value3
+                    *target_level <- level
+        
+        if *median_index is not 0 then
+            findmid(tree->child3, level + 1, median_index, value, target_level)
+
+
+Part D
+T(n) = 4T(n/4) + a as the time complexity for the recursive case
+T(1) = b as the base case
+T(n/4) = 4T(n/16) + a
+T(n/16) = 4T(n/64) + a
+...
+T(n) = (4^3)T(n/4^3) + (4^2)a + 4a + a
+Therefore, T(n) = (4^k)T(n/4^k) + (4^(k - 1))a + (4^(k - 2))a + ... +(4^0)a
+Let 4^k = n, k = log4(n)
+T(n) = n * T(1) + (4^(log4(n) - 1))a + (4^(log4(n) - 2))a + ... + (4^0)a
+     = bn + a(1(1 - 4^(log4(n))) / 1 - 4)
+     = bn + a((1 - n) / -3)
+     = bn + a((n - 1) / 3)
+     = (b + a / 3)n - 1 / 3a
+     = O(n) as the time complexity for the algorithm in Part C
+This algorithm does not require extra space in memory as it only need O(1)
+space complexity to store the median value and the level of it. The algorithm
+occurs in-place as it will only access the values within each node but doesn't 
+need to store them.
